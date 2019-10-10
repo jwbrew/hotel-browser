@@ -14,7 +14,7 @@ init flags url key =
     ( { error = Nothing
       , establishments = []
       , filters = Filters Nothing Nothing Nothing Nothing
-      , paging = Paging 5 0
+      , paging = Paging 12 0
       , sort = Stars DESC
       }
     , Data.getEstablishments GetEstablishments
@@ -31,6 +31,21 @@ update msg model =
 
                 Err reason ->
                     ( { model | error = Just reason }, Cmd.none )
+
+        FilterName "" ->
+            ( { model | filters = (\f -> { f | name = Nothing }) model.filters }, Cmd.none )
+
+        FilterName q ->
+            ( { model | filters = (\f -> { f | name = Just q }) model.filters }, Cmd.none )
+
+        FilterCost c ->
+            ( { model | filters = (\f -> { f | minCost = c }) model.filters }, Cmd.none )
+
+        FilterRating r ->
+            ( { model | filters = (\f -> { f | userRating = r }) model.filters }, Cmd.none )
+
+        FilterStars s ->
+            ( { model | filters = (\f -> { f | stars = s }) model.filters }, Cmd.none )
 
         UrlChange ->
             ( model, Cmd.none )

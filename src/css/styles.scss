@@ -59,4 +59,17 @@
   }
 }
 
+.filters {
+  @apply flex flex-wrap justify-center py-2 px-1 mb-1;
+  &__input {
+    @apply bg-white rounded border px-2 py-1 mx-1 my-1 text-sm text-gray-800;
+    &--text {
+      @apply w-64;
+    }
+    &--select {
+      @apply appearance-none;
+    }
+  }
+}
+
 @tailwind utilities;

@@ -19,6 +19,10 @@ type alias Model =
 
 type Msg
     = GetEstablishments (Result Http.Error (List Establishment))
+    | FilterName String
+    | FilterStars (Maybe Stars)
+    | FilterRating (Maybe Float)
+    | FilterCost (Maybe ( Float, Float ))
     | UrlChange
     | UrlRequest
 
@@ -39,8 +43,8 @@ type alias Page =
 type alias Filters =
     { name : Maybe String
     , stars : Maybe Stars
-    , userRating : Maybe UserRating
-    , minCost : Maybe Float
+    , userRating : Maybe Float
+    , minCost : Maybe ( Float, Float )
     }
 
 

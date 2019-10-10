@@ -1,4 +1,13 @@
-module Data exposing (Establishment(..), Stars(..), UserRating(..), establishmentAttributes, getEstablishments)
+module Data exposing
+    ( Establishment(..)
+    , Stars(..)
+    , UserRating(..)
+    , establishmentAttributes
+    , getEstablishments
+    , getUserRatingScore
+    , intToStars
+    , starsToInt
+    )
 
 import Http
 import Json.Decode exposing (..)
@@ -93,29 +102,58 @@ imageDecoder main =
     map (Image main) (field "ThumbnailUrl" string)
 
 
-starsDecoder : Int -> Decoder Stars
-starsDecoder stars =
+starsToInt : Stars -> Int
+starsToInt stars =
     case stars of
+        ZeroStar ->
+            0
+
+        OneStar ->
+            1
+
+        TwoStar ->
+            2
+
+        ThreeStar ->
+            3
+
+        FourStar ->
+            4
+
+        FiveStar ->
+            5
+
+
+intToStars : Int -> Maybe Stars
+intToStars int =
+    case int of
         0 ->
-            succeed ZeroStar
+            Just ZeroStar
 
         1 ->
-            succeed OneStar
+            Just OneStar
 
         2 ->
-            succeed TwoStar
+            Just TwoStar
 
         3 ->
-            succeed ThreeStar
+            Just ThreeStar
 
         4 ->
-            succeed FourStar
+            Just FourStar
 
         5 ->
-            succeed FiveStar
+            Just FiveStar
 
-        n ->
-            fail <| "Invalid Stars: " ++ String.fromInt n
+        _ ->
+            Nothing
+
+
+starsDecoder : Int -> Decoder Stars
+starsDecoder stars =
+    intToStars stars
+        |> Maybe.map succeed
+        |> Maybe.withDefault (fail <| "Invalid Stars: " ++ String.fromInt stars)
 
 
 userRatingDecoder : String -> Decoder UserRating
@@ -172,6 +210,52 @@ userRatingDecoder title =
 
         x ->
             fail <| "Invalid UserRating: " ++ x
+
+
+getUserRatingScore : UserRating -> Maybe Float
+getUserRatingScore userRating =
+    case userRating of
+        Unrated ->
+            Nothing
+
+        VeryPoor float int ->
+            Just float
+
+        Poor float int ->
+            Just float
+
+        Unsatisfactory float int ->
+            Just float
+
+        BelowAverage float int ->
+            Just float
+
+        Average float int ->
+            Just float
+
+        AboveAverage float int ->
+            Just float
+
+        Good float int ->
+            Just float
+
+        VeryGood float int ->
+            Just float
+
+        Great float int ->
+            Just float
+
+        Excellent float int ->
+            Just float
+
+        Magnificent float int ->
+            Just float
+
+        Exceptional float int ->
+            Just float
+
+        Spectacular float int ->
+            Just float
 
 
 establishmentAttributesDecoder : Decoder EstablishmentAttributes
