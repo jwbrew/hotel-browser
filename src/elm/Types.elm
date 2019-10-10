@@ -25,6 +25,7 @@ type Msg
     | FilterStars (Maybe Stars)
     | FilterRating (Maybe Float)
     | FilterCost (Maybe ( Float, Float ))
+    | LoadMore
     | UpdateSortField SortField
     | UpdateSortDirection SortDirection
     | FilterReset

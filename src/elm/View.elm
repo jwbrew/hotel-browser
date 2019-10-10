@@ -103,7 +103,7 @@ view : Model -> Document Msg
 view model =
     { title = "My App"
     , body =
-        [ div [ class "p-2 bg-gray-100 min-h-screen" ] <|
+        [ div [ class "p-2 bg-gray-100 min-h-screen pb-6" ] <|
             case model.error of
                 Just e ->
                     [ error e ]
@@ -254,8 +254,24 @@ listEstablishments ( establishmentList, page ) =
                 ]
 
         xs ->
-            List.map listItem xs
-                |> ul [ class "flex flex-wrap justify-center" ]
+            div []
+                [ List.map listItem xs |> ul [ class "flex flex-wrap justify-center" ]
+                , span [ class "text-gray-600 text-sm text-center block" ]
+                    [ text <|
+                        "showing "
+                            ++ (Basics.min page.paging.per page.total_items |> String.fromInt)
+                            ++ " of "
+                            ++ String.fromInt page.total_items
+                            ++ " items"
+                    ]
+                , if page.total_pages > page.paging.current then
+                    div [ class "text-center mt-2" ]
+                        [ a [ class "text-blue-600 cursor-pointer", onClick LoadMore ] [ text "Load More" ]
+                        ]
+
+                  else
+                    text ""
+                ]
 
 
 error : Http.Error -> Html Msg

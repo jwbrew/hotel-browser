@@ -23,6 +23,11 @@ init flags url key =
     )
 
 
+updateFilters : Model -> (Filters -> Filters) -> Model
+updateFilters model function =
+    { model | filters = function model.filters, paging = Paging 12 0 }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -35,22 +40,25 @@ update msg model =
                     ( { model | error = Just reason }, Cmd.none )
 
         FilterName "" ->
-            ( { model | filters = (\f -> { f | name = Nothing }) model.filters }, Cmd.none )
+            ( updateFilters model (\f -> { f | name = Nothing }), Cmd.none )
 
         FilterName q ->
-            ( { model | filters = (\f -> { f | name = Just q }) model.filters }, Cmd.none )
+            ( updateFilters model (\f -> { f | name = Just q }), Cmd.none )
 
         FilterCost c ->
-            ( { model | filters = (\f -> { f | minCost = c }) model.filters }, Cmd.none )
+            ( updateFilters model (\f -> { f | minCost = c }), Cmd.none )
 
         FilterRating r ->
-            ( { model | filters = (\f -> { f | userRating = r }) model.filters }, Cmd.none )
+            ( updateFilters model (\f -> { f | userRating = r }), Cmd.none )
 
         FilterStars s ->
-            ( { model | filters = (\f -> { f | stars = s }) model.filters }, Cmd.none )
+            ( updateFilters model (\f -> { f | stars = s }), Cmd.none )
 
         FilterReset ->
-            ( { model | filters = Filters Nothing Nothing Nothing Nothing }, Cmd.none )
+            ( updateFilters model <| always <| Filters Nothing Nothing Nothing Nothing, Cmd.none )
+
+        LoadMore ->
+            ( { model | paging = (\p -> { p | per = p.per + 12 }) model.paging }, Cmd.none )
 
         UpdateSortDirection dir ->
             ( { model | sort = (\s -> { s | dir = dir }) model.sort }, Cmd.none )

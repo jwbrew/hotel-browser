@@ -13,6 +13,7 @@
 
 .establishment {
   @apply mb-8 shadow bg-white rounded overflow-hidden;
+  width: 400px;
 
   &__content {
     @apply p-3 flex flex-col;
