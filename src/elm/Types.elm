@@ -3,7 +3,7 @@ module Types exposing (Flags, Model, Msg(..), Page, Paging)
 import Data exposing (Establishment, Stars, UserRating)
 import Filtering exposing (Filters)
 import Http
-import Sorting exposing (Sort)
+import Sorting exposing (Sort, SortDirection, SortField)
 
 
 type alias Flags =
@@ -25,10 +25,10 @@ type Msg
     | FilterStars (Maybe Stars)
     | FilterRating (Maybe Float)
     | FilterCost (Maybe ( Float, Float ))
-    | UpdateSort Sort
+    | UpdateSortField SortField
+    | UpdateSortDirection SortDirection
     | FilterReset
-    | UrlChange
-    | UrlRequest
+    | NoOp
 
 
 type alias Paging =

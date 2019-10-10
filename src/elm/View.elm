@@ -7,7 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http exposing (Error(..))
-import Sorting exposing (Sort, SortDirection(..), sortEstablishments)
+import Sorting exposing (Sort, SortDirection(..), SortField(..), sortEstablishments)
 import Types exposing (Model, Msg(..), Page, Paging)
 
 
@@ -77,18 +77,25 @@ filters f =
 sorting : Sort -> Html Msg
 sorting s =
     div [ class "sorting" ]
-        [ select [ class "sorting__input sorting__input--attr" ]
-            [ option [] [ text "Distance" ]
-            , option [] [ text "Stars" ]
-            , option [] [ text "Cost" ]
-            , option [] [ text "Rating" ]
+        [ label [ class "sorting__label" ] [ text "sort by" ]
+        , select
+            [ class "sorting__input sorting__input--attr"
+            , Sorting.parseField
+                >> Maybe.map UpdateSortField
+                >> Maybe.withDefault NoOp
+                |> onInput
+            ]
+            [ option [ selected <| s.field == Distance, Distance |> Sorting.fieldToString |> value ] [ text "Distance" ]
+            , option [ selected <| s.field == Stars, Stars |> Sorting.fieldToString |> value ] [ text "Stars" ]
+            , option [ selected <| s.field == MinCost, MinCost |> Sorting.fieldToString |> value ] [ text "Cost" ]
+            , option [ selected <| s.field == UserRating, UserRating |> Sorting.fieldToString |> value ] [ text "Rating" ]
             ]
         , case s.dir of
             ASC ->
-                a [ class "sorting__input sorting__input--dir" ] [ text "⬇" ]
+                a [ class "sorting__dir", onClick <| UpdateSortDirection DESC ] [ text "↓" ]
 
             DESC ->
-                a [ class "sorting__input sorting__input--dir" ] [ text "⬆" ]
+                a [ class "sorting__dir", onClick <| UpdateSortDirection ASC ] [ text "↑" ]
         ]
 
 

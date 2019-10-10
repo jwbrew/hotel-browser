@@ -1,4 +1,4 @@
-module Sorting exposing (Sort, SortDirection(..), SortField(..), sortEstablishments)
+module Sorting exposing (Sort, SortDirection(..), SortField(..), fieldToString, parseField, sortEstablishments)
 
 import Data exposing (Establishment)
 
@@ -29,6 +29,41 @@ applySortDirection direction establishmentList =
 
         DESC ->
             List.reverse establishmentList
+
+
+fieldToString : SortField -> String
+fieldToString sortField =
+    case sortField of
+        Distance ->
+            "Distance"
+
+        Stars ->
+            "Stars"
+
+        MinCost ->
+            "MinCost"
+
+        UserRating ->
+            "UserRating"
+
+
+parseField : String -> Maybe SortField
+parseField string =
+    case string of
+        "Distance" ->
+            Just Distance
+
+        "Stars" ->
+            Just Stars
+
+        "MinCost" ->
+            Just MinCost
+
+        "UserRating" ->
+            Just UserRating
+
+        _ ->
+            Nothing
 
 
 sortEstablishments : Sort -> List Establishment -> List Establishment

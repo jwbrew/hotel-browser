@@ -52,13 +52,13 @@ update msg model =
         FilterReset ->
             ( { model | filters = Filters Nothing Nothing Nothing Nothing }, Cmd.none )
 
-        UpdateSort sort ->
-            ( { model | sort = sort }, Cmd.none )
+        UpdateSortDirection dir ->
+            ( { model | sort = (\s -> { s | dir = dir }) model.sort }, Cmd.none )
 
-        UrlChange ->
-            ( model, Cmd.none )
+        UpdateSortField field ->
+            ( { model | sort = (\s -> { s | field = field }) model.sort }, Cmd.none )
 
-        UrlRequest ->
+        NoOp ->
             ( model, Cmd.none )
 
 
@@ -69,12 +69,12 @@ subscriptions model =
 
 onUrlRequest : UrlRequest -> Msg
 onUrlRequest urlRequest =
-    UrlRequest
+    NoOp
 
 
 onUrlChange : Url -> Msg
 onUrlChange url =
-    UrlChange
+    NoOp
 
 
 main : Program Flags Model Msg

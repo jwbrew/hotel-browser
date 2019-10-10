@@ -73,9 +73,15 @@
 }
 
 .sorting {
-  @apply flex justify-center;
+  @apply flex justify-center mb-2 items-end;
+  &__label {
+    @apply text-xs text-gray-500 mr-1;
+  }
   &__input {
-    @apply bg-transparent;
+    @apply appearance-none bg-transparent text-gray-900 text-sm;
+  }
+  &__dir {
+    @apply text-gray-900 cursor-pointer px-1;
   }
 }
 
