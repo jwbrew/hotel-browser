@@ -47,6 +47,9 @@ update msg model =
         FilterStars s ->
             ( { model | filters = (\f -> { f | stars = s }) model.filters }, Cmd.none )
 
+        FilterReset ->
+            ( { model | filters = Filters Nothing Nothing Nothing Nothing }, Cmd.none )
+
         UrlChange ->
             ( model, Cmd.none )
 

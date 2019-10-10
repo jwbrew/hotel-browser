@@ -23,6 +23,7 @@ type Msg
     | FilterStars (Maybe Stars)
     | FilterRating (Maybe Float)
     | FilterCost (Maybe ( Float, Float ))
+    | FilterReset
     | UrlChange
     | UrlRequest
 

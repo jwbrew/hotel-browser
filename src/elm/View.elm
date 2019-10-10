@@ -90,6 +90,7 @@ filters f =
             , class "filters__input filters__input--text"
             , placeholder "Search"
             , onInput (String.toLower >> FilterName)
+            , Maybe.withDefault "" f.name |> value
             ]
             []
         , select
@@ -129,7 +130,7 @@ view : Model -> Document Msg
 view model =
     { title = "My App"
     , body =
-        [ div [ class "p-2 bg-gray-100" ] <|
+        [ div [ class "p-2 bg-gray-100 min-h-screen" ] <|
             case model.error of
                 Just e ->
                     [ error e ]
@@ -266,8 +267,21 @@ ratingDetail intro r c =
 
 listEstablishments : ( List Establishment, Page ) -> Html Msg
 listEstablishments ( establishmentList, page ) =
-    List.map listItem establishmentList
-        |> ul [ class "flex flex-wrap justify-center" ]
+    case establishmentList of
+        [] ->
+            div [ class "block text-center my-12 flex flex-col" ]
+                [ span [ class "text-gray-700 " ]
+                    [ text "No Results Found" ]
+                , a
+                    [ onClick FilterReset
+                    , class "text-blue-500 cursor-pointer hover:underline text-xs"
+                    ]
+                    [ text "Reset Filters" ]
+                ]
+
+        xs ->
+            List.map listItem xs
+                |> ul [ class "flex flex-wrap justify-center" ]
 
 
 error : Http.Error -> Html Msg
