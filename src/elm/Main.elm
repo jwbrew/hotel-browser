@@ -3,7 +3,9 @@ module Main exposing (main)
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
 import Data
+import Filtering exposing (Filters)
 import Html
+import Sorting exposing (Sort, SortDirection(..), SortField(..))
 import Types exposing (..)
 import Url exposing (Url)
 import View
@@ -15,7 +17,7 @@ init flags url key =
       , establishments = []
       , filters = Filters Nothing Nothing Nothing Nothing
       , paging = Paging 12 0
-      , sort = Stars DESC
+      , sort = Sort Stars DESC
       }
     , Data.getEstablishments GetEstablishments
     )
@@ -49,6 +51,9 @@ update msg model =
 
         FilterReset ->
             ( { model | filters = Filters Nothing Nothing Nothing Nothing }, Cmd.none )
+
+        UpdateSort sort ->
+            ( { model | sort = sort }, Cmd.none )
 
         UrlChange ->
             ( model, Cmd.none )

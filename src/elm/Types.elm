@@ -1,7 +1,9 @@
-module Types exposing (Filters, Flags, Model, Msg(..), Page, Paging, Sort(..), SortDirection(..))
+module Types exposing (Flags, Model, Msg(..), Page, Paging)
 
 import Data exposing (Establishment, Stars, UserRating)
+import Filtering exposing (Filters)
 import Http
+import Sorting exposing (Sort)
 
 
 type alias Flags =
@@ -23,6 +25,7 @@ type Msg
     | FilterStars (Maybe Stars)
     | FilterRating (Maybe Float)
     | FilterCost (Maybe ( Float, Float ))
+    | UpdateSort Sort
     | FilterReset
     | UrlChange
     | UrlRequest
@@ -39,23 +42,3 @@ type alias Page =
     , total_pages : Int
     , total_items : Int
     }
-
-
-type alias Filters =
-    { name : Maybe String
-    , stars : Maybe Stars
-    , userRating : Maybe Float
-    , minCost : Maybe ( Float, Float )
-    }
-
-
-type SortDirection
-    = ASC
-    | DESC
-
-
-type Sort
-    = Distance SortDirection
-    | Stars SortDirection
-    | MinCost SortDirection
-    | UserRating SortDirection

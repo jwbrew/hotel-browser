@@ -2,61 +2,22 @@ module View exposing (view)
 
 import Browser exposing (Document)
 import Data exposing (Establishment(..), Stars(..), UserRating(..))
+import Filtering exposing (Filters, filterEstablishments, parseCostRange)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http exposing (Error(..))
-import Types exposing (Filters, Model, Msg(..), Page, Paging, Sort)
-
-
-flip : (a -> b -> c) -> b -> a -> c
-flip fn b a =
-    fn a b
-
-
-defaultTrue : (a -> Bool) -> Maybe a -> Bool
-defaultTrue testFn maybeFilter =
-    Maybe.map testFn maybeFilter |> Maybe.withDefault True
-
-
-filter : List Establishment -> Filters -> List Establishment
-filter establishmentList f =
-    let
-        nameFilter =
-            Data.establishmentAttributes >> .name >> String.toLower >> flip String.contains >> defaultTrue
-
-        starsFilter =
-            Data.establishmentAttributes >> .stars >> (==) >> defaultTrue
-
-        costFilter =
-            Data.establishmentAttributes
-                >> .minCost
-                >> (\minCost ( minimum, maximum ) -> minCost >= minimum && minCost <= maximum)
-                >> defaultTrue
-
-        ratingFilter =
-            Data.establishmentAttributes
-                >> .userRating
-                >> (\r query ->
-                        case Data.getUserRatingScore r of
-                            Nothing ->
-                                False
-
-                            Just score ->
-                                score >= query
-                   )
-                >> defaultTrue
-    in
-    List.filter
-        (\e -> nameFilter e f.name && starsFilter e f.stars && costFilter e f.minCost && ratingFilter e f.userRating)
-        establishmentList
+import Sorting exposing (Sort, SortDirection(..), sortEstablishments)
+import Types exposing (Model, Msg(..), Page, Paging)
 
 
 currentPage : Paging -> Filters -> Sort -> List Establishment -> ( List Establishment, Page )
-currentPage paging f sort establishmentList =
+currentPage paging f s establishmentList =
     let
         establishments =
-            filter establishmentList f
+            establishmentList
+                |> filterEstablishments f
+                |> sortEstablishments s
 
         total =
             List.length establishments
@@ -67,19 +28,6 @@ currentPage paging f sort establishmentList =
     ( establishments |> List.drop (page.paging.current * page.paging.per) |> List.take page.paging.per
     , page
     )
-
-
-parseCostRange : String -> Maybe ( Float, Float )
-parseCostRange string =
-    case
-        String.split "-" string
-            |> List.filterMap String.toFloat
-    of
-        [ x, y ] ->
-            Just ( x, y )
-
-        _ ->
-            Nothing
 
 
 filters : Filters -> Html Msg
@@ -126,6 +74,24 @@ filters f =
         ]
 
 
+sorting : Sort -> Html Msg
+sorting s =
+    div [ class "sorting" ]
+        [ select [ class "sorting__input sorting__input--attr" ]
+            [ option [] [ text "Distance" ]
+            , option [] [ text "Stars" ]
+            , option [] [ text "Cost" ]
+            , option [] [ text "Rating" ]
+            ]
+        , case s.dir of
+            ASC ->
+                a [ class "sorting__input sorting__input--dir" ] [ text "⬇" ]
+
+            DESC ->
+                a [ class "sorting__input sorting__input--dir" ] [ text "⬆" ]
+        ]
+
+
 view : Model -> Document Msg
 view model =
     { title = "My App"
@@ -137,6 +103,7 @@ view model =
 
                 Nothing ->
                     [ filters model.filters
+                    , sorting model.sort
                     , currentPage model.paging model.filters model.sort model.establishments |> listEstablishments
                     ]
         ]

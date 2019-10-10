@@ -72,4 +72,11 @@
   }
 }
 
+.sorting {
+  @apply flex justify-center;
+  &__input {
+    @apply bg-transparent;
+  }
+}
+
 @tailwind utilities;
