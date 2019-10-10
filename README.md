@@ -1,6 +1,6 @@
 # Hotel Browser Application
 
-## Get Started
+## Get Started
 
 `git clone https://github.com/jwbrew/hotel-browser`
 
