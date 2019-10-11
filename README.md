@@ -8,7 +8,7 @@
 
 The browser is backed by a JSON API, available in the /api directory. Use `ws` to enable the correct path present in Data#70:
 
-`yarn global add ws`
+`yarn global add local-web-server`
 
 `ws`
 
